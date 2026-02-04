@@ -5,7 +5,7 @@
 
         <br>
 
-        <TodoList :todos="todos" />
+        <TodoList :todos="recentTodos" />
 
     </div>
 </template>
