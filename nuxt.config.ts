@@ -9,6 +9,8 @@ export default defineNuxtConfig({
     '@': fileURLToPath(new URL('.', import.meta.url))
   },
 
+  modules: [`@pinia/nuxt`],
+
   vite: {
     plugins: [tsconfigPaths()],
     css: {
