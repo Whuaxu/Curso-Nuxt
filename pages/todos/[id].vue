@@ -10,7 +10,8 @@
 
         <NuxtLink :to="`/todos/edit/${todo?.id}`" class="btn">Edit</NuxtLink>
 
-        <button @click="todoStore.updateMarkCompletedStatus(todoid)" :class="todo?.completed ? 'btn-danger' : 'btn-success'"> {{ todo?.completed ? 'Mark as Incomplete' : 'Mark as Completed' }}</button>
+        <button @click="todoStore.updateMarkCompletedStatus(todoid)" :class="todo?.completed ? 'btn-warning' : 'btn-success'"> {{ todo?.completed ? 'Mark as Incomplete' : 'Mark as Completed' }}</button>
+        <button @click="todoStore.deleteTodo(todoid)" class='btn-danger'>Delete</button>
 
     </div>
 </template>
@@ -31,7 +32,7 @@ useSeoMeta({
 const route = useRoute();
 
 const todoStore = useTodoStore();
-const { todos, getTodoById } = storeToRefs(todoStore);
+const { todos } = storeToRefs(todoStore);
 
 const idParam = route.params.id;
 const todoid = Number(route?.params?.id)
@@ -93,5 +94,21 @@ div{
 
 .btn-danger:hover {
     background-color: #c82333;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: #212529;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 10px;
+    font-size: 16px;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
 }
 </style>
