@@ -14,8 +14,10 @@
 const todoStore = useTodoStore();
 const {todos} = storeToRefs(todoStore);
 
-const recentTodos = computed(() => {
-    return todos.value.slice(-2).reverse();
+const recentTodos = computed(() => (Array.isArray(todos.value) ? todos.value.slice(-2).reverse() : []));
+
+onMounted( async () => {
+    await todoStore.fetchTodos();
 });
 </script>
 
