@@ -16,6 +16,13 @@
 </template>
 
 <script setup lang="ts">
+
+definePageMeta({
+    pageTransition: {
+        name: 'rotate',
+    },
+});
+
 useSeoMeta({
     title: 'ToDo Details',
     description: `Details of ToDo`,
