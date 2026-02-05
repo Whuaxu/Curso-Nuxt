@@ -12,6 +12,6 @@
 
 <style scoped>
 main {
-    padding: 2rem;
+    padding: 10px;
 }
 </style>

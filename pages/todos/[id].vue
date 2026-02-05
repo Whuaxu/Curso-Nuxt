@@ -31,6 +31,9 @@ const todo = computed(() =>
 </script>
 
 <style scoped>
+div{
+    margin: 10px;
+}
 .btn {
     background-color: #007bff;
     color: white;
