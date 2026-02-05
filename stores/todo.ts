@@ -2,29 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useTodoStore = defineStore('todo', {
     state: () => ({
-        todos: [
-            {
-                id:1, 
-                title: 'Title 1', 
-                description: 'This is task 1', 
-                completed: false, 
-                createdAt: new Date().toISOString()
-            },
-            {
-                id:2, 
-                title: 'Title 2', 
-                description: 'This is task 2', 
-                completed: true, 
-                createdAt: new Date().toISOString()
-            },
-            {
-                id:3, 
-                title: 'Title 3', 
-                description: 'This is task 3', 
-                completed: false, 
-                createdAt: new Date().toISOString()
-            }
-        ] as Array<{
+        todos: [] as Array<{
             id: number,
             title: string,
             description: string,
@@ -34,43 +12,121 @@ export const useTodoStore = defineStore('todo', {
         nextId: 1,
     }),
 
-    getters: {
-        getTodoById: (state) => {
-            return (id: number) => state.todos.find(t => t.id === id);
-        }
-    },
-
     actions: {
-        addTodo(todo: {id: number,
-            title: string,
-            description: string,
-            completed: boolean,
-            createdAt: string}) {
+        async fetchTodos() {
+            try {
 
-                this.todos.push(todo);
-                this.nextId++;
-        },
-        updateTodo(update: {id: number,
-            title: string,
-            description: string,
-            completed: boolean,
-            createdAt: string}) {
-                const index = this.todos.findIndex(t => t.id === update.id);
+                const { data, error } = await useFetch('/api/todos');
 
-                if (index !== -1) {
-                    this.todos[index] = update;
+                if (error.value) {
+                    throw new Error('Error fetching todos:', error.value);
                 }
+
+                if (data.value && 'data' in data.value) {
+                    this.todos = data.value.data;
+                }
+            } catch (error) {
+                console.error('Error fetching todos:', error);
+            }
+        },
+        async addTodo(todo: {
+            id: number,
+            title: string,
+            description: string,
+            completed: boolean,
+            createdAt: string
+        }) {
+
+            try {
+
+                const { data, error } = await useFetch('/api/todos',
+                    {
+                        method: 'POST',
+                        body: todo,
+                    }
+                );
+
+                if (error.value) {
+                    throw new Error('Error to add todos:', error.value);
+                }
+                
+                if (data.value && 'value' in data.value && 'id' in data.value.value) {
+                    this.todos.push(data.value.value);
+                }
+            } catch (error) {
+                console.error('Error to add todos:', error);
+            }
+        },
+        async updateTodo(update: {
+            id: number,
+            title: string,
+            description: string,
+            completed: boolean,
+            createdAt: string
+        }) {
+            try {
+                const { data, error } = await useFetch('/api/todos', {
+                    method: 'PUT',
+                    body: update,
+                });
+
+                if (error.value) {
+                    throw new Error('Error updating todo:', error.value);
+                }
+
+                if (data.value && 'value' in data.value && 'id' in data.value.value) {
+                    const index = this.todos.findIndex(t => t.id === update.id);
+                    if (index !== -1) {
+                        this.todos[index] = data.value.value;
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating todo:', error);
+            }
         },
 
-        deleteTodo(id: number) {
-            this.todos = this.todos.filter(t => t.id !== id);
+        async deleteTodo(id: number) {
+            try {
+                const { data, error } = await useFetch('/api/todos', {
+                    method: 'DELETE',
+                    body: { id },
+                });
+
+                if (error.value) {
+                    throw new Error('Error deleting todo:', error.value);
+                }
+
+                if (data.value && 'success' in data.value && data.value.success) {
+                    this.todos = this.todos.filter(t => t.id !== id);
+                }
+            } catch (error) {
+                console.error('Error deleting todo:', error);
+            }
         },
 
-        updateMarkCompletedStatus(id: number) {
-            const index = this.todos.findIndex(t => t.id === id);
-            const todo = this.todos[index];
-            if (index !== -1 && todo) {
-                todo.completed = !todo.completed;
+        async updateMarkCompletedStatus(id: number) {
+            try {
+                const index = this.todos.findIndex(t => t.id === id);
+                const todo = this.todos[index];
+                
+                if (index !== -1 && todo) {
+                    const updatedTodo = { ...todo, completed: !todo.completed };
+                    
+                    const { data, error } = await useFetch('/api/todos', {
+                        method: 'PUT',
+                        body: updatedTodo,
+                    });
+
+                    if (error.value) {
+                        throw new Error('Error updating todo status:', error.value);
+                    }
+
+                    if (data.value && 'value' in data.value && 'id' in data.value.value) {
+                        this.todos[index] = data.value.value;
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating todo status:', error);
             }
         }
     },

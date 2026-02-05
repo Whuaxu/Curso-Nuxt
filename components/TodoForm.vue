@@ -43,15 +43,15 @@ const props = defineProps({
 
 const form = ref({...props.todo});
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
     
     if(props.isEdit){
         todoStore.updateTodo(form.value);
     } else {
         form.value.id = Date.now();
-        todoStore.addTodo(form.value);
+        await todoStore.addTodo(form.value);
     }
-    router.push(`/todos/${form.value.id}`);
+    router.push(`/todos`);
 };
 
 watch(
