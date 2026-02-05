@@ -10,6 +10,16 @@
 const todoStore = useTodoStore();
 const {todos} = storeToRefs(todoStore);
 
+useHead({
+    title: 'All ToDos',
+    meta: [
+        {
+            name: 'description',
+            content: 'A list of all your ToDos'
+        }
+    ]
+})
+
 </script>
 
 <style lang="scss" scoped></style>

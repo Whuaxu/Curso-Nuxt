@@ -16,6 +16,10 @@
 </template>
 
 <script setup lang="ts">
+useSeoMeta({
+    title: 'ToDo Details',
+    description: `Details of ToDo`,
+});
 
 const route = useRoute();
 
